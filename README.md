@@ -8,7 +8,7 @@ The process is like so:
 User Query-> Model -> Function Caller -> Model -> Response
 ```
 
-The beauty here is the function calling format. Functions are defined like this:
+The beauty here is the function calling format ***EasyFNC***, in which the functions are defined like this:
     
 ```json
 [
