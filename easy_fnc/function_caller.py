@@ -1,5 +1,6 @@
 import inspect
 from easy_fnc.functions import get_user_defined_functions
+from easy_fnc.core_utils import get_core_utils
 
 class FunctionCaller:
     """
@@ -8,7 +9,10 @@ class FunctionCaller:
 
     def __init__(self):
         # Initialize the functions dictionary
-        self.functions = get_user_defined_functions("easy_fnc/functions.py")
+        user_functions = get_user_defined_functions("easy_fnc/functions.py")
+        core_utils = get_core_utils()
+
+        self.functions = {**user_functions, **core_utils}
         self.outputs = {}
 
     def create_functions_metadata(self) -> list[dict]:
