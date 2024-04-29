@@ -66,18 +66,31 @@ class FunctionCaller:
                 if value in self.outputs:
                     input[key] = self.outputs[value]
             return input
+        
+        def format_input(input: dict) -> dict:
+            """Format the input for the function."""
+            for key, value in input.items():
+                # If a value is encased by "{" and "}", then it is a variable
+                if "{" in value and "}" in value:
+                    # Get the variable name
+                    variable_name = value.split("{")[1].split("}")[0]
+                    # Get the value from the outputs
+                    input[key] = variable_name 
+            
+            return input
 
         # Get the function name from the function dictionary
         function_name = function["name"]
         
         # Get the function params from the function dictionary
         function_input = function["params"] if "params" in function else None
+        function_input = format_input(function_input) if function_input else None
         function_input = check_if_input_is_output(function_input) if function_input else None
     
         # Call the function from tools.py with the given input
         # pass all the arguments to the function from the function_input
         output = self.functions[function_name](**function_input) if function_input else self.functions[function_name]()
-        self.outputs[function["output"]] = output
-        return output
+        self.outputs[function["output"]] = output if output else None
+        return output if output else None
 
     

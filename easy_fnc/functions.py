@@ -24,21 +24,17 @@ def get_user_defined_functions(filename: str) -> dict[str, callable]:
 
     return functions
 
+# Example functions
 def get_weather_forecast(location: str) -> dict[str, str]:
     """Retrieves the weather forecast for a given location"""
-    # Mock values for test
+    forecasts = ["sunny", "cloudy", "rainy", "snowy", "windy"]
     return {
         "location": location,
-        "forecast": "sunny",
-        "temperature": "25°C",
+        "forecast": random.choice(forecasts),
+        "temperature": f"{random.randint(-10, 40)}°C"
     }
 
 def get_random_city() -> str:
     """Retrieves a random city from a list of cities"""
     cities = ["Groningen", "Enschede", "Amsterdam", "Istanbul", "Baghdad", "Rio de Janeiro", "Tokyo", "Kampala"]
     return random.choice(cities)
-
-def get_random_number() -> int:
-    """Retrieves a random number"""
-    # Mock value for test
-    return 31

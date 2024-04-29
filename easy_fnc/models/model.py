@@ -14,16 +14,12 @@ class EasyFNCModel(ABC):
         """
         pass
 
-    def get_function_calls(self, user_input: str) -> list[dict]:
+    def get_function_calls(
+            self, 
+            user_input: str, 
+            verbose: bool = False
+        ) -> list[dict]:
         """
         Get the function calls from the user input.
         """
-        # Get the model response and extract the content
-        model_response = self.generate(user_input)
-        content = model_response["message"]["content"]
-
-        # Extract the function calls 
-        # They're in between <|function_calls|> and <|end_function_calls|> tags
-        function_calls = content.split("<|function_calls|>")[1].split("<|end_function_calls|>")[0].strip()
-
-        pass
+        pass 
