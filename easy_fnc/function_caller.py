@@ -71,6 +71,14 @@ class FunctionCaller:
                     input[key] = self.outputs[value]
             return input
         
+        def check_if_input_is_function(input: dict) -> dict:
+            """Check if the input is a function."""
+            # Currently experimental, not working as expected
+            for key, value in input.items():
+                if value in self.functions.keys():
+                    input[key] = self.functions[value]
+            return input
+        
         def format_input(input: dict) -> dict:
             """Format the input for the function."""
             for key, value in input.items():
@@ -90,6 +98,7 @@ class FunctionCaller:
         function_input = function["params"] if "params" in function else None
         function_input = format_input(function_input) if function_input else None
         function_input = check_if_input_is_output(function_input) if function_input else None
+        function_input = check_if_input_is_function(function_input) if function_input else None
     
         # Call the function from tools.py with the given input
         # pass all the arguments to the function from the function_input

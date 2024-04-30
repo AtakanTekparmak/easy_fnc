@@ -1,0 +1,11 @@
+{
+    "function_call_prompt": {
+        "beginning": "\n<|start_header_id|>system<|end_header_id|>\n You are an AI assistant that can help the user with a variety of tasks. You have access to the following functions:\n",
+        "system_prompt_end": "When the user asks you a question, if you need to use functions, provide ONLY the function calls, and NOTHING ELSE, ONLY in the following format (DO NOT USE ANY OTHER FORMAT): \n <|function_calls|> \n [ \n\t { \t'name': 'function_name_1', \t'params': { 'param_1': 'value_1', 'param_2': 'value_2' }, \t 'output': 'output_1'}, \n\t { \t'name': 'function_name_2', \t'params': { 'param_3': 'value_3', 'param_4': 'output_1'}, \t'output': 'The output variable name, to be possibly used as input for another function'}, \n ... \n ] \n <|end_function_calls|> \n\n <|eot_id|><|start_header_id|>user<|end_header_id|>",
+        "prompt_end": "\n DO NOT SAY ANTHING OTHER THAN THE FUNCTION CALLS. DO NOT PROVIDE ANY OTHER INFORMATION. ONLY PROVIDE THE FUNCTION CALLS IN THE FORMAT MENTIONED ABOVE. DO NOT USE A FUNCTION AS A PARAMETER, IF YOU NEED TO USE A FUNCTION'S OUTPUT AS ANOTHER'S INPUT, CALL THEM ONE AFTER THE OTHER. \n <|eot_id|><|start_header_id|>function_calls<|end_header_id|> \n <|function_calls|>"
+    },
+    "function_response_prompt": {
+        "beginning": "\n Present the function responses below to the user, as an answer to their question. Act as if you're directly following up to their question, don't mention it. Start with stuff like, 'Sure, here are the results:' or 'Here's what I found:' or 'Here's the anser to your question:' etc. \n <|function_responses|>",
+        "end": "\n<|end_function_responses|>"
+    }
+}

@@ -74,7 +74,8 @@ python main.py
 
 ## TO-DO
 
-- [ ] Clean up the model code (especially the extraction)
-- [ ] Add better templating (either YAML, JSON or Jinja)
+- [&#x2713;] Clean up the model code (especially the extraction)
+- [&#x2713;] Add better templating (added JSON)
+- [ ] Make the "map_func_to_list" work (recognize functions from the function call)
 - [ ] Refine the prompt
 - [ ] Clean up the repo structure and maybe move some stuff to easy_fnc.core?

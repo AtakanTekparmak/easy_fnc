@@ -5,6 +5,7 @@ def main():
     # Set constants
     MODEL_NAME = "llama3" # using llama3 model for testing
     VERBOSE = False
+    SHOW_FUNCTION_CALLS = True
 
     # Create a FunctionCaller object
     function_caller = FunctionCaller()
@@ -18,7 +19,7 @@ def main():
     # Get the function calls from the user input
     user_input = "Can you get me the weather forecast of a random city?"
     print(f"-User Input: \n{user_input}\n")
-    function_calls = ollama_model.get_function_calls(user_input, verbose=True)
+    function_calls = ollama_model.get_function_calls(user_input, verbose=SHOW_FUNCTION_CALLS)
 
     # Call the functions
     output = ""
@@ -28,10 +29,10 @@ def main():
             print(f"Function Output: {function_caller.call_function(function)}")
 
     # Call the model with the output
-    response = ollama_model.generate(output, first_message=False)
+    response = ollama_model.generate(output, first_message=False) if output else "Function output is empty"
 
     # Print the response
-    print(f"-Model reply: \n{response}")
+    print(f"- Model reply: \n{response}")
 
 
 
