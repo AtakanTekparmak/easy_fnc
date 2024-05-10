@@ -1,6 +1,9 @@
 # Testing/Staging Shit
 testing_dir/*
 
+# Virtualenvs
+myenv
+
 # Python Stuff
 
 # Byte-compiled / optimized / DLL files

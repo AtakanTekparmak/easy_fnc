@@ -1,4 +1,6 @@
 import inspect
+from ast import literal_eval
+
 from easy_fnc.functions import get_user_defined_functions
 from easy_fnc.core_utils import get_core_utils
 
@@ -69,6 +71,9 @@ class FunctionCaller:
             for key, value in input.items():
                 if value in self.outputs:
                     input[key] = self.outputs[value]
+                # Check if value is a string encased by dollar signs
+                if value.startswith("$") and value.endswith("$"):
+                    input[key] = self.outputs[value[1:-1]]
             return input
         
         def check_if_input_is_function(input: dict) -> dict:
@@ -82,12 +87,37 @@ class FunctionCaller:
         def format_input(input: dict) -> dict:
             """Format the input for the function."""
             for key, value in input.items():
+                if not isinstance(value, str):
+                    input[key] = str(value)
                 # If a value is encased by "{" and "}", then it is a variable
                 if "{" in value and "}" in value:
                     # Get the variable name
                     variable_name = value.split("{")[1].split("}")[0]
                     # Get the value from the outputs
                     input[key] = variable_name 
+            
+            return input
+        
+        def infer_input_type(input: dict) -> dict:
+            """Infer the input type for the function."""
+            for key, value in input.items():
+                # If the value is a string, then check if it is a number
+                if isinstance(value, str):
+                    # Check if the value is an integer
+                    if value.isdigit():
+                        input[key] = int(value)
+                    # Check if the value is a float
+                    elif "." in value and value.replace(".", "").isdigit():
+                        input[key] = float(value)
+                    # Check if the value is a boolean
+                    elif value.lower() in ["true", "false"]:
+                        input[key] = value.lower() == "true"
+                    # Check if the value is a list
+                    elif value.startswith("[") and value.endswith("]"):
+                        input[key] = literal_eval(value)
+                    # Check if the value is a dictionary
+                    elif value.startswith("{") and value.endswith("}"):
+                        input[key] = literal_eval(value)
             
             return input
 
@@ -99,11 +129,21 @@ class FunctionCaller:
         function_input = format_input(function_input) if function_input else None
         function_input = check_if_input_is_output(function_input) if function_input else None
         function_input = check_if_input_is_function(function_input) if function_input else None
+        function_input = infer_input_type(function_input) if function_input else None
     
         # Call the function from tools.py with the given input
         # pass all the arguments to the function from the function_input
         output = self.functions[function_name](**function_input) if function_input else self.functions[function_name]()
-        self.outputs[function["output"]] = output if output else None
+        # Check if output is enclosed by dollar signs
+        if isinstance(output, str):
+            if output.startswith("$") and output.endswith("$"):
+                output = output[1:-1]
+        # Check if function["output"] is a string encased by dollar signs
+        if function["output"].startswith("$") and function["output"].endswith("$"):
+            function_output = function["output"][1:-1]
+        else:
+            function_output = function["output"]
+        self.outputs[function_output] = output if output else None
         return output if output else None
 
     

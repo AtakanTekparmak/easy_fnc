@@ -10,7 +10,7 @@ class OllamaModel(EasyFNCModel):
     def __init__(self, model_name: str, functions: list[dict[str, str]]) -> None:
         super().__init__(functions)
         self.model_name = model_name
-        self.template = self.load_template(template_name="llama-3-8b")
+        self.template = self.load_template(template_name="hermes2pro-llama3-8b")
     
     def format_user_input(self, user_input: str) -> str:
         """ Format the user input. """
@@ -21,9 +21,10 @@ class OllamaModel(EasyFNCModel):
 
         return system_prompt + user_input + self.template["function_call_prompt"]["prompt_end"]
 
-    def format_output(self, output: any) -> str:
+    def format_output(self, output: any, original_prompt: str) -> str:
         """ Format the output. """
-        prompt = self.template["function_response_prompt"]["beginning"]
+        prompt = self.template["function_response_prompt"]["beginning"] + original_prompt
+        prompt += self.template["function_response_prompt"]["middle"]
         prompt += json.dumps(output, indent=4)
         prompt += self.template["function_response_prompt"]["end"]
 
@@ -32,15 +33,17 @@ class OllamaModel(EasyFNCModel):
     def generate(
             self, 
             user_input: str,
-            first_message: bool = True
+            first_message: bool = True,
+            response_message : bool = False,
+            original_prompt: str = ""
             ) -> dict:
         """
         Generate a response based on the user input.
         """
         if first_message:
             user_input = self.format_user_input(user_input)
-        else:
-            user_input = self.format_output(user_input)
+        elif response_message:
+            user_input = self.format_output(user_input, original_prompt)
 
         # Get the model response and extract the content
         model_response = ollama.chat(
@@ -58,10 +61,29 @@ class OllamaModel(EasyFNCModel):
             user_input: str,
             verbose: bool = False
         ) -> list[dict[str, str]]:
+        def extract_thoughts (content: str) -> str:
+            """
+            Extract the thoughts from the user input.
+            """
+            if "<|end_thoughts|>" in content:
+                # Remove <|end_thoughts|> from the end
+                thoughts = content.split("<|end_thoughts|>")[0]
+                if "<|thoughts|>" in thoughts:
+                    # Remove <|thoughts|> from the beginning
+                    thoughts = thoughts.split("<|thoughts|>")[1]
+            else :
+                thoughts = content
+
+            return thoughts
         """
         Get the function calls from the user input.
         """
         content = self.generate(user_input)
+        
+        if verbose:
+            thoughts = extract_thoughts(content)
+            print ("- Model Thoughts:")
+            print(thoughts)
 
         # Extract the function calls 
         if "<|end_function_calls|>" in content: 
