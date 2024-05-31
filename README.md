@@ -1,4 +1,4 @@
-# Easy FNC (Function Calling) Package
+# easy_fnc
 
 The `easy_fnc` package provides a framework for generating responses using AI models and executing user-defined functions. It allows users to define their own functions and integrate them with AI models to create interactive and customizable applications.
 

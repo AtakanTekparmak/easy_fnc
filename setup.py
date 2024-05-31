@@ -8,16 +8,16 @@ def read_readme():
 def main():
     setup(
         name='easy_fnc',
-        version='0.1.2.1',
+        version='0.1.5',
         description='This package hopes to provide a modular and highly extendable interface to interact with LLMs via (multiple) function calling, easily.',
         long_description=read_readme(),
         long_description_content_type="text/markdown",
         author='Atakan Tekparmak',
         author_email='atakantekerparmak@gmail.com',
+        url="https://github.com/AtakanTekparmak/easy_fnc",
         packages=find_packages(),
         install_requires=[
             "ollama",
-            "tomllib",
         ],
     )
 

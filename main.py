@@ -19,7 +19,7 @@ def main():
     ollama_model = OllamaModel(
         MODEL_NAME, 
         functions_metadata,
-        template=load_template("nous-hermes2pro-llama3-8b:f16.json")
+        template=load_template("easy_fnc/models/templates/nous-hermes2pro-llama3-8b:f16.json")
     )
 
     # Get the function calls from the user input
