@@ -1,4 +1,4 @@
-# Easy FNC (Function Calling) Package (It's now a Python package!)
+# Easy FNC (Function Calling) Package
 
 The `easy_fnc` package provides a framework for generating responses using AI models and executing user-defined functions. It allows users to define their own functions and integrate them with AI models to create interactive and customizable applications.
 
@@ -57,7 +57,7 @@ The package provides an abstract base class `EasyFNCModel` in the `model.py` fil
 To create a custom model, subclass `EasyFNCModel` and implement the required methods:
 
 - `generate(self, user_input: str) -> dict`: Generate a response based on the user input.
-- `get_function_calls(self, user_input: str, verbose: bool = False) -> list[dict]`: Extract function calls from the user input.
+- `get_function_calls(self, user_input: str, verbose: bool = False) -> list[dict]`: Extract function calls from the model output.
 
 Example:
 
