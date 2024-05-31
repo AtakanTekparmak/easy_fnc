@@ -6,16 +6,21 @@ from easy_fnc.core_utils import get_core_utils
 
 class FunctionCaller:
     """
-    A class to call functions from tools.py.
+    A class to call functions from user-defined functions and core utilities.
     """
 
     def __init__(self):
         # Initialize the functions dictionary
-        user_functions = get_user_defined_functions("easy_fnc/functions.py")
         core_utils = get_core_utils()
-
-        self.functions = {**user_functions, **core_utils}
+        self.functions = {**core_utils}
         self.outputs = {}
+
+    def add_user_functions(self, file_path: str):
+        """
+        Add user-defined functions from the specified file path.
+        """
+        user_functions = get_user_defined_functions(file_path)
+        self.functions.update(user_functions)
 
     def create_functions_metadata(self) -> list[dict]:
         """Creates the functions metadata for the prompt. """

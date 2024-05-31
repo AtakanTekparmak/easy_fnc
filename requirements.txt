@@ -1,1 +1,6 @@
 ollama 
+
+# Package requirements
+setuptools
+wheel 
+twine

@@ -1,5 +1,7 @@
 import ollama
+
 import json
+from typing import Union
 
 from easy_fnc.models.model import EasyFNCModel
 
@@ -7,10 +9,20 @@ class OllamaModel(EasyFNCModel):
     """
     A class to generate responses using the Ollama model.
     """
-    def __init__(self, model_name: str, functions: list[dict[str, str]]) -> None:
+    def __init__(
+            self, 
+            model_name: str, 
+            functions: list[dict[str, str]],
+            template: Union[str, dict]
+        ) -> None:
         super().__init__(functions)
         self.model_name = model_name
-        self.template = self.load_template(template_name="hermes2pro-llama3-8b")
+        if isinstance(template, str):
+            self.template = self.load_template(template_name=model_name.split("/")[1])
+        elif isinstance(template, dict):
+            self.template = template
+        else:
+            raise ValueError("Invalid template format. Expected a template name or a dictionary.")
     
     def format_user_input(self, user_input: str) -> str:
         """ Format the user input. """

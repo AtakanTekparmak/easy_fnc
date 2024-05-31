@@ -1,5 +1,6 @@
 from easy_fnc.function_caller import FunctionCaller
 from easy_fnc.models.ollama import OllamaModel
+from easy_fnc.utils import load_template
 
 def main():
     # Set constants
@@ -9,12 +10,17 @@ def main():
 
     # Create a FunctionCaller object
     function_caller = FunctionCaller()
+    function_caller.add_user_functions("easy_fnc/functions.py")
 
     # Create the functions metadata
     functions_metadata = function_caller.create_functions_metadata()
 
     # Create the Ollama model 
-    ollama_model = OllamaModel(MODEL_NAME, functions_metadata)
+    ollama_model = OllamaModel(
+        MODEL_NAME, 
+        functions_metadata,
+        template=load_template("nous-hermes2pro-llama3-8b:f16.json")
+    )
 
     # Get the function calls from the user input
     user_input = "Can you get me a random city and the weather forecast for it?"
