@@ -8,7 +8,7 @@ def read_readme():
 def main():
     setup(
         name='easy_fnc',
-        version='0.1.5',
+        version='0.1.6',
         description='This package hopes to provide a modular and highly extendable interface to interact with LLMs via (multiple) function calling, easily.',
         long_description=read_readme(),
         long_description_content_type="text/markdown",
