@@ -77,7 +77,7 @@ class FunctionCaller:
                 if value in self.outputs:
                     input[key] = self.outputs[value]
                 # Check if value is a string encased by dollar signs
-                if value.startswith("$") and value.endswith("$"):
+                if value.startswith("$") and value.endswith("$") and not key.lower() == "key":
                     input[key] = self.outputs[value[1:-1]]
             return input
         
@@ -94,6 +94,12 @@ class FunctionCaller:
             for key, value in input.items():
                 if not isinstance(value, str):
                     input[key] = str(value)
+                    if input[key].startswith("$") and input[key].endswith("$") and not key.lower() == "key":
+                        input[key] = input[key][1:-1]
+                        if input[key] in self.outputs:
+                            input[key] = self.outputs[value]
+                if isinstance(value, int):
+                    input[key] = value
                 # If a value is encased by "{" and "}", then it is a variable
                 if "{" in value and "}" in value:
                     # Get the variable name
@@ -111,6 +117,8 @@ class FunctionCaller:
                     # Check if the value is an integer
                     if value.isdigit():
                         input[key] = int(value)
+                    elif value.startswith("$") and value.endswith("$") and not key.lower() == "key":
+                        input[key] = self.outputs[value[1:-1]]
                     # Check if the value is a float
                     elif "." in value and value.replace(".", "").isdigit():
                         input[key] = float(value)
@@ -125,6 +133,17 @@ class FunctionCaller:
                         input[key] = literal_eval(value)
             
             return input
+        
+        def remove_the_dollarsign(input: dict) -> dict:
+            """Removes the dollarsign from the input."""
+            for key, value in input.items():
+                if isinstance(value, str):
+                    if value.startswith("$") and value.endswith("$") and not key.lower() == "key":
+                        input[key] = value[1:-1]
+                        input[key] = self.outputs[input[key]]
+                if isinstance(value, dict):
+                    input[key] = remove_the_dollarsign(value)
+            return input
 
         # Get the function name from the function dictionary
         function_name = function["name"]
@@ -135,6 +154,7 @@ class FunctionCaller:
         function_input = check_if_input_is_output(function_input) if function_input else None
         function_input = check_if_input_is_function(function_input) if function_input else None
         function_input = infer_input_type(function_input) if function_input else None
+        function_input = remove_the_dollarsign(function_input) if function_input else None
     
         # Call the function from tools.py with the given input
         # pass all the arguments to the function from the function_input
