@@ -2,13 +2,14 @@ import random
 import importlib
 import ast
 
-from easy_fnc.models.ollama import OllamaModel
-
 def get_user_defined_functions(filename: str) -> dict[str, callable]:
     """Retrieves the user defined functions from a file"""
     # Parse the file
-    with open(filename, 'r') as file:
-        tree = ast.parse(file.read())
+    try:
+        with open(filename, 'r') as file:
+            tree = ast.parse(file.read())
+    except FileNotFoundError:
+        raise FileNotFoundError(f"File {filename} not found")
 
     # Get the user defined functions
     functions: dict[str, callable] = {}
@@ -42,31 +43,3 @@ def get_random_city() -> str:
 def get_random_number(low: int, high: int) -> int:
     """Retrieves a random number between low and high"""
     return random.randint(low, high)
-
-def get_tweets(
-        hashtag: str,
-        limit: int = 10
-    ) -> list[str]:
-    """Retrieves tweets for a given hashtag and an  optional limit on the number of tweets"""
-    # Check if OLLAMA_MODEL is instantiated, if not, instantiate it
-    
-    MODEL_NAME = "llama3:8b-instruct-fp16"
-    OLLAMA_MODEL = OllamaModel(
-        model_name= MODEL_NAME,
-        functions=[{"", ""}]
-    )
-
-    # Define lambda function to generate tweets from hastag using the OLLAMA model
-    generate_tweets = lambda hashtag: OLLAMA_MODEL.generate(
-        user_input=f"Generate {str(limit)} tweets about {hashtag}. Provide user name and tweet content. Separate each tweet with a line of ~ characters.",
-        first_message=False,
-        response_message=False
-    )
-
-    # Generate tweets
-    tweets = generate_tweets(hashtag)
-
-    # Split the tweets
-    tweets = tweets.split("~")
-
-    return tweets
