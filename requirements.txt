@@ -4,3 +4,6 @@ ollama
 setuptools
 wheel 
 twine
+
+# Pydantic
+pydantic

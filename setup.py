@@ -18,6 +18,7 @@ def main():
         packages=find_packages(),
         install_requires=[
             "ollama",
+            "pydantic"
         ],
     )
 

@@ -1,4 +1,4 @@
-from easy_fnc.function_caller import FunctionCaller
+from easy_fnc.function_caller import FunctionCaller, create_functions_metadata
 from easy_fnc.models.ollama import OllamaModel
 from easy_fnc.utils import load_template
 
@@ -13,7 +13,7 @@ def main():
     function_caller.add_user_functions("easy_fnc/functions.py")
 
     # Create the functions metadata
-    functions_metadata = function_caller.create_functions_metadata()
+    functions_metadata = create_functions_metadata(function_caller.functions)
 
     # Create the Ollama model 
     ollama_model = OllamaModel(

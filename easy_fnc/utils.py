@@ -1,5 +1,6 @@
 import json
 import tomllib
+import re
 
 # Define constants
 TEMPLATE_FILE_TYPES = ["json", "toml"]
@@ -39,3 +40,17 @@ def load_toml(file_path: str) -> dict:
     except tomllib.TOMLDecodeError:
         raise tomllib.TOMLDecodeError(f"Error decoding TOML file {file_path}")
     return data
+
+def extract_thoughts_and_function_calls(raw_response: str) -> tuple[str, str]:
+    """
+    Extract the thoughts and function calls from the raw model response.
+    """
+    pattern = r'<\|thoughts\|>(.*?)<\|end_thoughts\|>\s*<\|function_calls\|>(.*?)<\|end_function_calls\|>'
+    match = re.search(pattern, raw_response, re.DOTALL)
+    
+    if match:
+        thoughts = match.group(1).strip()
+        function_calls = match.group(2).strip()
+        return thoughts, function_calls
+    else:
+        return "", ""

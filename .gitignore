@@ -1,5 +1,6 @@
 # Testing/Staging Stuff
 testing_dir/*
+pypi_stuff.toml
 
 # Virtualenvs
 myenv

@@ -3,17 +3,22 @@ from ast import literal_eval
 
 from easy_fnc.functions import get_user_defined_functions
 from easy_fnc.core_utils import get_core_utils
+from easy_fnc.schemas import FunctionCall, ModelResponse
+from easy_fnc.utils import extract_thoughts_and_function_calls
 
-class FunctionCaller:
+class FunctionCallingEngine:
     """
-    A class to call functions from user-defined functions and core utilities.
+    Function calling engine for EasyFNC.
     """
-
-    def __init__(self):
+    def __init__(
+            self,
+            extraction_function: callable = extract_thoughts_and_function_calls,
+        ):
         # Initialize the functions dictionary
         core_utils = get_core_utils()
         self.functions = {**core_utils}
         self.outputs = {}
+        self.extraction_function = extraction_function
 
     def add_user_functions(self, file_path: str):
         """
@@ -22,7 +27,47 @@ class FunctionCaller:
         user_functions = get_user_defined_functions(file_path)
         self.functions.update(user_functions)
 
-    def create_functions_metadata(self) -> list[dict]:
+    def parse_model_response(self, raw_response: str) -> ModelResponse:
+        """
+        Parse the model response and return the ModelResponse object.
+        """
+        return ModelResponse.from_raw_response(raw_response, self.extraction_function)
+    
+    def call_functions(self, function_calls: list[FunctionCall]) -> dict:
+        """
+        Call the functions from the given input.
+        """
+        outputs = {}
+        for function_call in function_calls:
+            function_name = function_call.name
+            function_input = function_call.kwargs
+
+            # Check if the input is an output from a previous function
+            for key, value in function_input.items():
+                if value in self.outputs:
+                    function_input[key] = self.outputs[value]
+
+            if function_call.returns:
+                # Switch case for length of returns
+                match len(function_call.returns):
+                    case 0:
+                        # Call the function with no returns
+                        output = self.functions[function_name]()
+                        outputs[function_call.returns[0]] = output
+                    case 1:
+                        # Call the function with one return
+                        output = self.functions[function_name](**function_input)
+                        outputs[function_call.returns[0]] = output
+                    case _:
+                        # Call the function with one or more returns
+                        outputs_tuple = self.functions[function_name](**function_input) 
+                        for i in range(len(function_call.returns)):
+                            outputs[function_call.returns[i]] = outputs_tuple[i]
+
+        self.outputs = outputs
+        return outputs
+
+def create_functions_metadata(functions: dict) -> list[dict]:
         """Creates the functions metadata for the prompt. """
         def format_type(p_type: str) -> str:
             """Format the type of the parameter."""
@@ -35,7 +80,7 @@ class FunctionCaller:
             
         functions_metadata = []
         i = 0
-        for name, function in self.functions.items():
+        for name, function in functions.items():
             i += 1
             descriptions = function.__doc__.split("\n")
             functions_metadata.append({
@@ -62,6 +107,24 @@ class FunctionCaller:
             })
 
         return functions_metadata
+
+class FunctionCaller:
+    """
+    A class to call functions from user-defined functions and core utilities.
+    """
+
+    def __init__(self):
+        # Initialize the functions dictionary
+        core_utils = get_core_utils()
+        self.functions = {**core_utils}
+        self.outputs = {}
+
+    def add_user_functions(self, file_path: str):
+        """
+        Add user-defined functions from the specified file path.
+        """
+        user_functions = get_user_defined_functions(file_path)
+        self.functions.update(user_functions)
 
     def call_function(self, function):
         """
