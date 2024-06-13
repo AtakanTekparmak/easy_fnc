@@ -37,7 +37,6 @@ class FunctionCallingEngine:
         """
         Call the functions from the given input.
         """
-        outputs = {}
         for function_call in function_calls:
             function_name = function_call.name
             function_input = function_call.kwargs
@@ -53,19 +52,18 @@ class FunctionCallingEngine:
                     case 0:
                         # Call the function with no returns
                         output = self.functions[function_name]()
-                        outputs[function_call.returns[0]] = output
+                        self.outputs[function_call.returns[0]] = output
                     case 1:
                         # Call the function with one return
                         output = self.functions[function_name](**function_input)
-                        outputs[function_call.returns[0]] = output
+                        self.outputs[function_call.returns[0]] = output
                     case _:
                         # Call the function with one or more returns
                         outputs_tuple = self.functions[function_name](**function_input) 
                         for i in range(len(function_call.returns)):
-                            outputs[function_call.returns[i]] = outputs_tuple[i]
+                            self.outputs[function_call.returns[i]] = outputs_tuple[i]
 
-        self.outputs = outputs
-        return outputs
+        return self.outputs if self.outputs else {}
 
 def create_functions_metadata(functions: dict) -> list[dict]:
         """Creates the functions metadata for the prompt. """
