@@ -5,7 +5,8 @@ pypi_stuff.toml
 # Virtualenvs
 myenv
 
-# Python Stuff
+# Packaging stuff
+setup.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
