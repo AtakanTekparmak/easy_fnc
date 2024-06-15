@@ -37,14 +37,23 @@ class FunctionCallingEngine:
         """
         Call the functions from the given input.
         """
+        def map_previous_outputs(outputs_dict: dict, inputs_dict: dict) -> dict:
+            """Map the previous outputs to the input."""
+            for key, value in inputs_dict.items():
+                if isinstance(value, str):
+                    if value in outputs_dict:
+                        inputs_dict[key] = outputs_dict[value]
+                if isinstance(value, dict):
+                    inputs_dict[key] = map_previous_outputs(value)
+
+            return inputs_dict
+        
         for function_call in function_calls:
             function_name = function_call.name
             function_input = function_call.kwargs
 
             # Check if the input is an output from a previous function
-            for key, value in function_input.items():
-                if value in self.outputs:
-                    function_input[key] = self.outputs[value]
+            function_input = map_previous_outputs(self.outputs, function_input)
 
             if function_call.returns:
                 # Switch case for length of returns

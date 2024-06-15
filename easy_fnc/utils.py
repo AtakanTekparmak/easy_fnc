@@ -2,10 +2,15 @@ import json
 import tomllib
 import re
 
+from easy_fnc.models.templates import get_template_path
+
 # Define constants
 TEMPLATE_FILE_TYPES = ["json", "toml"]
 
-def load_template(file_path: str, file_type: str = "json") -> dict:
+def load_template(
+        file_path: str = get_template_path(),
+        file_type: str = "toml"
+    ) -> dict:
     """
     Load a template from a JSON file and return it as a dictionary.
     """

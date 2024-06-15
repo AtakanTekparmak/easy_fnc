@@ -16,16 +16,6 @@ class EasyFNCModel(ABC):
         """
         pass
 
-    @abstractmethod
-    def get_function_calls(
-            self, 
-            user_input: str, 
-            verbose: bool = False
-        ) -> list[dict]:
-        """
-        Get the function calls from the user input.
-        """
-
     def load_template(
         self, 
         template_name: str,

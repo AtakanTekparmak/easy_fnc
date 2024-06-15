@@ -48,7 +48,6 @@ class ModelResponse(BaseModel):
         if len(thoughts) < 1 and len(function_calls_str) < 1:
             raise ValueError("No thoughts or function calls found in the raw response")
     
-        print(function_calls_str)
         # Parse the function calls
         try:
             function_calls_loaded = json.loads(function_calls_str)
