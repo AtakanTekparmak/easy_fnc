@@ -13,6 +13,7 @@ Beware that the package is still in development and may have breaking changes, a
   - [Core Utility Functions](#core-utility-functions)
   - [Models](#models)
     - [Ollama Model](#ollama-model)
+    - [Groq Model](#groq-model)
   - [Templates](#templates)
 
 ## Installation
@@ -29,25 +30,32 @@ The full usage with Ollama is as follows (an example can also be found in `usage
 
 ```python
 from easy_fnc.function_caller import FunctionCallingEngine, create_functions_metadata
-from easy_fnc.models.ollama import OllamaModel
-from easy_fnc.utils import load_template
+from easy_fnc.models import OllamaModel
+
+# Declare the constants
+MODEL_NAME = "adrienbrault/nous-hermes2pro-llama3-8b:f16"
+VERBOSE = True
 
 # Create a FunctionCallingEngine object
 fnc_engine = FunctionCallingEngine()
-fnc_engine.add_user_functions("path/to/functions.py")
+fnc_engine.add_user_functions("easy_fnc/functions.py")
 functions_metadata = create_functions_metadata(fnc_engine.functions)
 
 # Create the Ollama model 
-MODEL_NAME = "adrienbrault/nous-hermes2pro-llama3-8b:f16"
-ollama_model = OllamaModel(
+
+model = OllamaModel(
     MODEL_NAME, 
-    functions_metadata,
-    template=load_template()
+    functions_metadata
 )
 
 # Generate the response
 user_input = "Can you get me a random city and the weather forecast for it?"
-response_raw = ollama_model.generate(user_input, first_message=True, response_message=False)
+response_raw = model.generate(user_input)
+
+# Print the raw response and system prompt if VERBOSE is True
+if VERBOSE: 
+    print(f"System prompt:\n {model.generate_system_prompt()}")
+    print(f"Raw response:\n {response_raw}")
 
 # Parse the example response
 parsed_response = fnc_engine.parse_model_response(raw_response=response_raw)
@@ -144,15 +152,40 @@ ollama pull adrienbrault/nous-hermes2pro-llama3-8b:f16
 from easy_fnc.models.ollama import OllamaModel
 from easy_fnc.utils import load_template
 
+# Create a FunctionCallingEngine object
+fnc_engine = FunctionCallingEngine()
+fnc_engine.add_user_functions("path/to/functions.py")
+functions_metadata = create_functions_metadata(fnc_engine.functions)
+
+# Create the Ollama model
 MODEL_NAME = "adrienbrault/nous-hermes2pro-llama3-8b:f16"
 ollama_model = OllamaModel(
     MODEL_NAME, 
     functions_metadata,
     template=load_template(file_type="toml")
 )
-
 ```
 
+#### Groq Model
+
+The package also includes an implementation of the `EasyFNCModel` using the Groq model. The `GroqModel` class is defined in the `easy_fnc/models/groq.py` file.
+
+To use the Groq model:
+1. Add the environment variable `GROQ_API_KEY` with your Groq API key.
+2. (Optional) Add the environment variable `GROQ_MODEL` with the model name you want to use. The default model is `llama-3-70b-8192`.
+3. Then, the usage is as follows:
+
+```python
+from easy_fnc.models import GroqModel
+
+# Create a FunctionCallingEngine object
+fnc_engine = FunctionCallingEngine()
+fnc_engine.add_user_functions("path/to/functions.py")
+functions_metadata = create_functions_metadata(fnc_engine.functions)
+
+# Create the Groq model
+model = GroqModel(functions_metadata)
+```
 ## Templates
 
 The `easy_fnc` package uses JSON and TOML templates to format user input and model responses. The `OllamaModel` class accepts both a string and a dictionary as parameters for the template. The default template is defined in the `easy_fnc/models/templates/base.toml` file.
