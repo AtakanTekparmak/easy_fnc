@@ -46,13 +46,13 @@ class ModelResponse(BaseModel):
         thoughts, function_calls_str = extraction_function(raw_response)
 
         if len(thoughts) < 1 and len(function_calls_str) < 1:
-            raise ValueError("No thoughts or function calls found in the raw response")
+            raise ValueError("No thoughts or function calls found in the raw response. Raw response: \n" + raw_response)
     
         # Parse the function calls
         try:
             function_calls_loaded = json.loads(function_calls_str)
         except json.JSONDecodeError:
-            raise ValueError("Error parsing function calls from the raw response")
+            raise ValueError("Error parsing function calls from the raw response. Raw response: \n" + raw_response)
         
         function_calls = [FunctionCall.from_dict(data) for data in function_calls_loaded]
         

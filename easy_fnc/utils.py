@@ -1,11 +1,20 @@
 import json
 import tomllib
 import re
-
-from easy_fnc.models.templates import get_template_path
+import os
 
 # Define constants
 TEMPLATE_FILE_TYPES = ["json", "toml"]
+
+def get_template_path():
+    """
+    Return the path of the base.toml file.
+    """
+    # Get the current directory
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+
+    # Return the path of the base.toml file
+    return os.path.join(current_dir, "models", "templates", "base.toml")
 
 def load_template(
         file_path: str = get_template_path(),

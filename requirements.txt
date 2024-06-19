@@ -1,9 +1,11 @@
+# LLM Backends/Vendors
 ollama 
+groq
+
+# Pydantic
+pydantic
 
 # Package requirements
 setuptools
 wheel 
 twine
-
-# Pydantic
-pydantic
