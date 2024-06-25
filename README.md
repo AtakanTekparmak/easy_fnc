@@ -226,7 +226,7 @@ Contributions to the `easy_fnc` package are welcome! If you find any issues or h
 
 ## License
 
-The `easy_fnc` package is open-source and released under the [MIT License](https://opensource.org/licenses/MIT).
+The `easy_fnc` package is open-source and released under the [Apache 2.0 License](https://www.apache.org/licenses/LICENSE-2.0).
 
 ---
 
