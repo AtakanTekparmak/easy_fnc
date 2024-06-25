@@ -1,6 +1,6 @@
 # easy_fnc
 
-The `easy_fnc` package provides a framework for generating responses using AI models and executing user-defined functions. It allows users to define their own functions and integrate them with AI models to create interactive and customizable applications.
+The `easy_fnc` package provides a framework for generating responses using LLMs and executing user-defined functions. It allows users to define their own functions and integrate them with LLMs to create interactive and customizable applications. The package has optional dependencies for different LLM backends, such as Ollama and Groq, to provide flexibility in choosing the model that best suits the user's needs.
 
 Beware that the package is still in development and may have breaking changes, as we have yet to release a stable version, `easy_fnc 1.0.0`.
 
@@ -22,6 +22,16 @@ To install the `easy_fnc` package, run the following command:
 
 ```
 pip install easy_fnc
+```
+
+To install with the optional `ollama` and `groq` dependencies, run the following commands:
+
+```
+pip install easy_fnc[ollama]
+```
+or
+```
+pip install easy_fnc[groq]
 ```
 
 ## Usage
@@ -124,7 +134,7 @@ The package provides an abstract base class `EasyFNCModel` in the `model.py` fil
 
 To create a custom model, subclass `EasyFNCModel` and implement the following abstract method:
 
-- `generate(self, user_input: str) -> dict`: Generate a response based on the user input.
+- `generate(self, user_input: str) -> str`: Generate a response based on the user input.
 
 Example:
 
@@ -132,7 +142,7 @@ Example:
 from easy_fnc.models.model import EasyFNCModel
 
 class CustomModel(EasyFNCModel):
-    def generate(self, user_input: str) -> dict:
+    def generate(self, user_input: str) -> str:
         # Implement response generation logic
         pass
 ```

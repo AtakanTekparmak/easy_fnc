@@ -20,7 +20,7 @@ class GroqModel(EasyFNCModel):
         self.messages = [{"role": "system", "content": self.generate_system_prompt().replace("<|user_query|>", "")}]
 
         if os.environ.get("GROQ_MODEL") is None:
-            print("No GROQ_MODEL environment variable found. Using: llama3-70b-8192.")
+            print("No GROQ_MODEL environment variable found. Using: llama3-8b-8192.")
             self.model_name = "llama3-8b-8192"
         else: 
             self.model_name = os.environ.get("GROQ_MODEL")

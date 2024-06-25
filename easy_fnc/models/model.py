@@ -1,6 +1,4 @@
 from abc import ABC, abstractmethod
-from json import load as load_json
-from typing import Optional
 import json
 
 from easy_fnc.utils import load_template, get_template_path
