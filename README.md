@@ -1,5 +1,12 @@
 # easy_fnc
 
+<p align="center">
+    <a><img src="https://img.shields.io/badge/Version-0.2.1-green.svg" alt="Version"></a>
+    <a><img src="https://img.shields.io/badge/Python-3.9.13-blue.svg" alt="Python"></a>
+    <a href="https://groq.com/"><img src="https://img.shields.io/badge/Groq-red" alt="Groq"></a>
+    <a href="https://ollama.com/"><img src="https://img.shields.io/badge/Ollama-white" alt="Ollama"></a>
+<p>
+
 The `easy_fnc` package provides a framework for generating responses using LLMs and executing user-defined functions. It allows users to define their own functions and integrate them with LLMs to create interactive and customizable applications. The package has optional dependencies for different LLM backends, such as Ollama and Groq, to provide flexibility in choosing the model that best suits the user's needs.
 
 Beware that the package is still in development and may have breaking changes, as we have yet to release a stable version, `easy_fnc 1.0.0`.
