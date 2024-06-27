@@ -18,8 +18,9 @@ class FunctionCallingEngine:
     def __init__(
             self,
             extraction_function: Callable = extract_thoughts_and_function_calls,
+            auto_load_core_utils: bool = True
         ):
-        self.functions: Dict[str, Callable] = {**get_core_utils()}
+        self.functions: Dict[str, Callable] = {**get_core_utils()} if auto_load_core_utils else {}
         self.outputs: Dict[str, Any] = {}
         self.extraction_function: Callable = extraction_function
         logger.info("FunctionCallingEngine initialized")
