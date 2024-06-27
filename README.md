@@ -31,16 +31,6 @@ To install the `easy_fnc` package, run the following command:
 pip install easy_fnc
 ```
 
-To install with the optional `ollama` and `groq` dependencies, run the following commands:
-
-```
-pip install easy_fnc[ollama]
-```
-or
-```
-pip install easy_fnc[groq]
-```
-
 ## Usage
 
 The full usage with Ollama is as follows (an example can also be found in `usage.py` in the root directory of the package):
