@@ -1,37 +1,58 @@
-from pydantic import BaseModel, Field
-
+from typing import List, Dict, Any, Callable
+from pydantic import BaseModel, Field, validator
 import json
+import logging
 
 from easy_fnc.utils import extract_thoughts_and_function_calls
+
+logger = logging.getLogger(__name__)
+
+class FunctionParameter(BaseModel):
+    name: str
+    type: str
+
+class FunctionReturn(BaseModel):
+    name: str
+    type: str
+
+class FunctionMetadata(BaseModel):
+    name: str
+    description: str
+    parameters: Dict[str, Any] = Field(..., description="Function parameters")
+    returns: List[FunctionReturn]
 
 class FunctionCall(BaseModel):
     """
     Pydantic model for the function call.
     """
     name: str = Field(..., description="The name of the function to be called")
-    kwargs: dict = Field({}, description="The keyword arguments for the function to be called")
-    returns: list[str] = Field([], description="The return values of the function that is called")
+    kwargs: Dict[str, Any] = Field(default_factory=dict, description="The keyword arguments for the function to be called")
+    returns: List[str] = Field(default_factory=list, description="The return values of the function that is called")
 
     @classmethod
-    def from_dict(cls, data: dict):
+    def from_dict(cls, data: Dict[str, Any]) -> 'FunctionCall':
         """
         Create a FunctionCall object from a dictionary.
         """
-        return cls(**data)
+        try:
+            return cls(**data)
+        except Exception as e:
+            logger.error(f"Error creating FunctionCall from dict: {str(e)}")
+            raise
 
 class ModelResponse(BaseModel):
     """
     Pydantic model for the model response.
     """
     thoughts: str = Field(..., description="The thoughts of the model")
-    function_calls: list[FunctionCall] = Field([], description="The function calls made by the model")
+    function_calls: List[FunctionCall] = Field(default_factory=list, description="The function calls made by the model")
 
     @classmethod
     def from_raw_response(
         cls, 
         raw_response: str,
-        extraction_function: callable = extract_thoughts_and_function_calls
-    ):
+        extraction_function: Callable = extract_thoughts_and_function_calls
+    ) -> 'ModelResponse':
         """
         Create a ModelResponse object from the raw response.
 
@@ -42,23 +63,24 @@ class ModelResponse(BaseModel):
             The function to extract the thoughts and function calls from the raw 
             response. Should return a tuple of thoughts and function calls string.
         """
-        # Extract the thoughts and function calls
-        thoughts, function_calls_str = extraction_function(raw_response)
-
-        if len(thoughts) < 1 and len(function_calls_str) < 1:
-            raise ValueError("No thoughts or function calls found in the raw response. Raw response: \n" + raw_response)
-    
-        # Parse the function calls
         try:
+            thoughts, function_calls_str = extraction_function(raw_response)
+
+            if not thoughts and not function_calls_str:
+                raise ValueError("No thoughts or function calls found in the raw response.")
+        
             function_calls_loaded = json.loads(function_calls_str)
-        except json.JSONDecodeError:
-            raise ValueError("Error parsing function calls from the raw response. Raw response: \n" + raw_response)
-        
-        function_calls = [FunctionCall.from_dict(data) for data in function_calls_loaded]
-        
-        return cls(thoughts=thoughts, function_calls=function_calls)
-    
-    def __str__(self):
+            function_calls = [FunctionCall.from_dict(data) for data in function_calls_loaded]
+            
+            return cls(thoughts=thoughts, function_calls=function_calls)
+        except json.JSONDecodeError as e:
+            logger.error(f"Error parsing function calls from the raw response: {str(e)}")
+            raise
+        except Exception as e:
+            logger.error(f"Error creating ModelResponse from raw response: {str(e)}")
+            raise
+
+    def __str__(self) -> str:
         """
         Return a string representation of the ModelResponse object.
         """

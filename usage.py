@@ -10,6 +10,7 @@ fnc_engine = FunctionCallingEngine()
 fnc_engine.add_user_functions("easy_fnc/functions.py")
 functions_metadata = create_functions_metadata(fnc_engine.functions)
 
+
 # Create the Ollama model 
 
 model = OllamaModel(
