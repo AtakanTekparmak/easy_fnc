@@ -7,12 +7,19 @@ from easy_fnc.utils import extract_thoughts_and_function_calls
 
 logger = logging.getLogger(__name__)
 
+class FunctionParameter(BaseModel):
+    name: str
+    type: str
+
+class FunctionReturn(BaseModel):
+    name: str
+    type: str
+
 class FunctionMetadata(BaseModel):
     name: str
     description: str
-    parameters: Dict[str, Any]
-    returns: List[Dict[str, str]]
-
+    parameters: Dict[str, Any] = Field(..., description="Function parameters")
+    returns: List[FunctionReturn]
 
 class FunctionCall(BaseModel):
     """

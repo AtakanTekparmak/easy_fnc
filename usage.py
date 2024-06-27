@@ -10,8 +10,6 @@ fnc_engine = FunctionCallingEngine()
 fnc_engine.add_user_functions("easy_fnc/functions.py")
 functions_metadata = create_functions_metadata(fnc_engine.functions)
 
-# Turn functions_metadata elements into dictionaries
-functions_metadata = [metadata.model_dump() for metadata in functions_metadata]
 
 # Create the Ollama model 
 

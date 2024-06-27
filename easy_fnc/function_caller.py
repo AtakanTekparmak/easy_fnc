@@ -1,11 +1,10 @@
 import inspect
 from typing import Dict, List, Callable, Any
-from pydantic import ValidationError
 import logging
 
 from easy_fnc.functions import get_user_defined_functions
 from easy_fnc.core_utils import get_core_utils
-from easy_fnc.schemas import FunctionCall, ModelResponse, FunctionMetadata
+from easy_fnc.schemas import FunctionCall, ModelResponse, FunctionMetadata, FunctionReturn
 from easy_fnc.utils import extract_thoughts_and_function_calls
 
 # Set up logging
@@ -43,7 +42,7 @@ class FunctionCallingEngine:
         """
         try:
             return ModelResponse.from_raw_response(raw_response, self.extraction_function)
-        except ValidationError as e:
+        except Exception as e:
             logger.error(f"Error parsing model response: {str(e)}")
             raise
     
@@ -98,7 +97,7 @@ def create_functions_metadata(functions: Dict[str, Callable]) -> List[FunctionMe
                 for param in inspect.signature(function).parameters
                 if param != 'return'
             }
-            returns = [{"name": f"{name}_output", "type": annotations.get('return', Any).__name__}]
+            returns = [FunctionReturn(name=f"{name}_output", type=annotations.get('return', Any).__name__)]
             
             metadata = FunctionMetadata(
                 name=name,
@@ -107,7 +106,6 @@ def create_functions_metadata(functions: Dict[str, Callable]) -> List[FunctionMe
                 returns=returns
             )
             functions_metadata.append(metadata)
-            logger.info(f"Created metadata for function: {name}")
         except Exception as e:
             logger.error(f"Error creating metadata for function {name}: {str(e)}")
             raise
