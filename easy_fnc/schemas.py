@@ -79,12 +79,6 @@ class ModelResponse(BaseModel):
         except Exception as e:
             logger.error(f"Error creating ModelResponse from raw response: {str(e)}")
             raise
-    
-    @validator('function_calls', pre=True, each_item=True)
-    def validate_function_calls(cls, v):
-        if isinstance(v, dict):
-            return FunctionCall(**v)
-        return v
 
     def __str__(self) -> str:
         """
