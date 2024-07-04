@@ -8,11 +8,16 @@ VERBOSE = False
 # Create a FunctionCallingEngine object
 fnc_engine = FunctionCallingEngine()
 fnc_engine.add_user_functions("easy_fnc/functions.py")
-functions_metadata = create_functions_metadata(fnc_engine.functions)
+
+# Two ways to create the functions metadata
+# 1. Pass the functions directly
+#functions_metadata = create_functions_metadata(functions=fnc_engine.functions)
+
+# 2. Pass the file path
+functions_metadata = create_functions_metadata(file_path="easy_fnc/functions.py")
 
 
 # Create the Ollama model 
-
 model = OllamaModel(
     MODEL_NAME, 
     functions_metadata

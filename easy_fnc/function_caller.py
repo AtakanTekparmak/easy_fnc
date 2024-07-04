@@ -86,8 +86,23 @@ class FunctionCallingEngine:
                 raise
 
         return self.outputs
+    
+def create_functions_metadata(
+        functions: Dict[str, Callable] = None,
+        file_path: str = None
+    ) -> List[FunctionMetadata]:
+    """
+    Create the functions metadata for the specified functions or from the specified file path.
+    """
+    if functions is None and file_path is None:
+        raise ValueError("Either functions or file_path must be specified")
+    
+    if functions is None:
+        functions = get_user_defined_functions(file_path)
 
-def create_functions_metadata(functions: Dict[str, Callable]) -> List[FunctionMetadata]:
+    return _create_functions_metadata(functions)
+
+def _create_functions_metadata(functions: Dict[str, Callable]) -> List[FunctionMetadata]:
     """Creates the functions metadata for the prompt."""
     functions_metadata = []
     for name, function in functions.items():
