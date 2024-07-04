@@ -188,7 +188,13 @@ from easy_fnc.models import GroqModel
 # Create a FunctionCallingEngine object
 fnc_engine = FunctionCallingEngine()
 fnc_engine.add_user_functions("path/to/functions.py")
-functions_metadata = create_functions_metadata(fnc_engine.functions)
+
+# Two ways to create the functions metadata
+# 1. Pass the functions directly
+#functions_metadata = create_functions_metadata(functions=fnc_engine.functions)
+
+# 2. Pass the file path that contains the python functions
+functions_metadata = create_functions_metadata(file_path="path/to/functions.py")
 
 # Create the Groq model
 model = GroqModel(functions_metadata)
